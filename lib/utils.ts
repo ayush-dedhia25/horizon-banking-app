@@ -1,5 +1,5 @@
 /* eslint-disable no-prototype-builtins */
-import { type ClassValue, clsx } from "clsx";
+import { clsx, type ClassValue } from "clsx";
 import qs from "query-string";
 import { twMerge } from "tailwind-merge";
 
@@ -37,25 +37,13 @@ export const formatDateTime = (dateString: Date) => {
     hour12: true, // use 12-hour clock (true) or 24-hour clock (false)
   };
 
-  const formattedDateTime: string = new Date(dateString).toLocaleString(
-    "en-US",
-    dateTimeOptions
-  );
+  const formattedDateTime: string = new Date(dateString).toLocaleString("en-US", dateTimeOptions);
 
-  const formattedDateDay: string = new Date(dateString).toLocaleString(
-    "en-US",
-    dateDayOptions
-  );
+  const formattedDateDay: string = new Date(dateString).toLocaleString("en-US", dateDayOptions);
 
-  const formattedDate: string = new Date(dateString).toLocaleString(
-    "en-US",
-    dateOptions
-  );
+  const formattedDate: string = new Date(dateString).toLocaleString("en-US", dateOptions);
 
-  const formattedTime: string = new Date(dateString).toLocaleString(
-    "en-US",
-    timeOptions
-  );
+  const formattedTime: string = new Date(dateString).toLocaleString("en-US", timeOptions);
 
   return {
     dateTime: formattedDateTime,
@@ -68,7 +56,7 @@ export const formatDateTime = (dateString: Date) => {
 export function formatAmount(amount: number): string {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: "INR",
     minimumFractionDigits: 2,
   });
 
@@ -129,9 +117,7 @@ export function getAccountTypeColors(type: AccountTypes) {
   }
 }
 
-export function countTransactionCategories(
-  transactions: Transaction[]
-): CategoryCount[] {
+export function countTransactionCategories(transactions: Transaction[]): CategoryCount[] {
   const categoryCounts: { [category: string]: number } = {};
   let totalCount = 0;
 
@@ -154,13 +140,11 @@ export function countTransactionCategories(
     });
 
   // Convert the categoryCounts object to an array of objects
-  const aggregatedCategories: CategoryCount[] = Object.keys(categoryCounts).map(
-    (category) => ({
-      name: category,
-      count: categoryCounts[category],
-      totalCount,
-    })
-  );
+  const aggregatedCategories: CategoryCount[] = Object.keys(categoryCounts).map((category) => ({
+    name: category,
+    count: categoryCounts[category],
+    totalCount,
+  }));
 
   // Sort the aggregatedCategories array by count in descending order
   aggregatedCategories.sort((a, b) => b.count - a.count);
