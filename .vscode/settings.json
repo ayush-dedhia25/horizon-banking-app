@@ -2,5 +2,5 @@
   "editor.codeActionsOnSave": {
     "source.organizeImports": "always"
   },
-  "cSpell.words": ["chartjs", "countup", "mobilenav"]
+  "cSpell.words": ["Appwrite", "chartjs", "countup", "Dwolla", "hookform", "lucide", "mobilenav"]
 }

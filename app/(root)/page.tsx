@@ -1,9 +1,10 @@
 import HeaderBox from "@/components/HeaderBox";
 import RightSidebar from "@/components/RightSidebar";
 import TotalBalanceBox from "@/components/TotalBalanceBox";
+import { getLoggedInUser } from "@/lib/actions/user.actions";
 
-function RootPage() {
-  const loggedIn = { firstName: "Ayush", lastName: "Dedhia", email: "ayushdedhia25@gmail.com" };
+async function RootPage() {
+  const loggedIn = await getLoggedInUser();
 
   return (
     <section className="home">
@@ -12,7 +13,7 @@ function RootPage() {
           <HeaderBox
             type="greeting"
             title="Welcome"
-            user={loggedIn?.firstName}
+            user={loggedIn?.name}
             subtext="Access and manage your account and transactions efficiently."
           />
           <TotalBalanceBox accounts={[]} totalBanks={1} totalCurrentBalance={136250.35} />

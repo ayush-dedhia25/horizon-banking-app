@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 
 import { sidebarLinks } from "@/constants";
 import { cn } from "@/lib/utils";
+import Footer from "./Footer";
 
 function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname();
@@ -46,7 +47,7 @@ function Sidebar({ user }: SidebarProps) {
         })}
         USER
       </nav>
-      Footer
+      <Footer user={user!} />
     </section>
   );
 }
