@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { PlaidLinkOnSuccess, usePlaidLink } from "react-plaid-link";
 
 import { createLinkToken, exchangePublicToken } from "@/lib/actions/user.actions";
+import Image from "next/image";
 import { Button } from "./ui/button";
 
 function PlaidLink({ user, variant }: PlaidLinkProps) {
@@ -36,9 +37,14 @@ function PlaidLink({ user, variant }: PlaidLinkProps) {
           Connect Bank
         </Button>
       ) : variant === "ghost" ? (
-        <Button>Connect Bank</Button>
+        <Button className="plaidlink-ghost" variant="ghost" onClick={() => open()}>
+          Connect Bank
+        </Button>
       ) : (
-        <Button>Connect Bank</Button>
+        <Button className="plaidlink-default" onClick={() => open()}>
+          <Image src="/icons/connect-bank.svg" alt="Connect Bank" width={24} height={24} />
+          <p className="hidden text-[16px] font-semibold text-black-2 xl:block">Connect Bank</p>
+        </Button>
       )}
     </>
   );

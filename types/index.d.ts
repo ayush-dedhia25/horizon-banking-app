@@ -216,7 +216,7 @@ declare interface RightSidebarProps {
 }
 
 declare interface SidebarProps {
-  user: User | null;
+  user: User;
 }
 
 declare interface RecentTransactionsProps {

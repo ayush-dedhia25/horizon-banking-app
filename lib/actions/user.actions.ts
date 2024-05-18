@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { ID } from "node-appwrite";
+import { ID, Query } from "node-appwrite";
 import {
   CountryCode,
   LinkTokenCreateRequest,
@@ -22,19 +22,36 @@ const {
   APPWRITE_BANK_COLLECTION_ID: BANK_COLLECTION_ID,
 } = process.env;
 
+const getUserInfo = async ({ userId }: getUserInfoProps) => {
+  try {
+    const { database } = await createAdminClient();
+    const user = await database.listDocuments(DATABASE_ID!, USER_COLLECTION_ID!, [
+      Query.equal("userId", [userId]),
+    ]);
+    return parseStringify(user.documents[0]);
+  } catch (err) {
+    console.log("Error at [GET_USER_INFO_ACTION]:", err);
+  }
+};
+
 export const signIn = async ({ email, password }: signInProps) => {
   try {
     const { account } = await createAdminClient();
+
     const session = await account.createEmailPasswordSession(email, password);
+
     cookies().set("appwrite-session", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
       secure: true,
     });
-    return parseStringify(session);
+
+    const user = await getUserInfo({ userId: session.userId });
+
+    return parseStringify(user);
   } catch (err) {
-    console.log(err);
+    console.log("Error at [SIGN_IN_ACTION]:", err);
   }
 };
 
@@ -74,7 +91,7 @@ export const signUp = async ({ password, ...userData }: SignUpParams) => {
 
     return parseStringify(newUser);
   } catch (err) {
-    console.log(err);
+    console.log("Error at [SIGN_UP_ACTION]:", err);
   }
 };
 
@@ -82,9 +99,10 @@ export const getLoggedInUser = async () => {
   try {
     const { account } = await createSessionClient();
     const result = await account.get();
-    return parseStringify(result);
+    const user = await getUserInfo({ userId: result.$id });
+    return parseStringify(user);
   } catch (err) {
-    console.log(err);
+    console.log("Error at [GET_LOGGED_IN_USER_ACTION]:", err);
     return null;
   }
 };
@@ -95,6 +113,7 @@ export const logoutAccount = async () => {
     cookies().delete("appwrite-session");
     await account.deleteSession("current");
   } catch (err) {
+    console.log("Error at [LOGOUT_ACTION]:", err);
     return null;
   }
 };
@@ -114,7 +133,7 @@ export const createLinkToken = async (user: User) => {
     const response = await plaidClient.linkTokenCreate(tokenParams);
     return parseStringify({ linkToken: response.data.link_token });
   } catch (err) {
-    console.log(err);
+    console.log("Error at [CREATE_LINK_TOKEN_ACTION]:", err);
   }
 };
 
@@ -138,7 +157,7 @@ export const createBankAccount = async ({
 
     return parseStringify(bankAccount);
   } catch (err) {
-    console.log(err);
+    console.log("Error at [CREATE_BANK_ACCOUNT_ACTION]:", err);
   }
 };
 
@@ -184,6 +203,46 @@ export const exchangePublicToken = async ({ publicToken, user }: exchangePublicT
 
     return parseStringify({ publicTokenExchange: "complete" });
   } catch (err) {
-    console.log("An error occurred while creating exchanging token:", err);
+    console.log("Error at [EXCHANGE_PUBLIC_TOKEN_ACTION]:", err);
+  }
+};
+
+export const getBank = async ({ documentId }: getBankProps) => {
+  try {
+    const { database } = await createAdminClient();
+    const bank = await database.listDocuments(DATABASE_ID!, BANK_COLLECTION_ID!, [
+      Query.equal("$id", [documentId]),
+    ]);
+    return parseStringify(bank.documents[0]);
+  } catch (err) {
+    console.log("Error at [GET_BANK_ACTION]:", err);
+  }
+};
+
+export const getBanks = async ({ userId }: getBanksProps) => {
+  try {
+    const { database } = await createAdminClient();
+    const banks = await database.listDocuments(DATABASE_ID!, BANK_COLLECTION_ID!, [
+      Query.equal("userId", [userId]),
+    ]);
+    return parseStringify(banks.documents);
+  } catch (err) {
+    console.log("Error at [GET_BANKS_ACTION]:", err);
+  }
+};
+
+export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps) => {
+  try {
+    const { database } = await createAdminClient();
+
+    const bank = await database.listDocuments(DATABASE_ID!, BANK_COLLECTION_ID!, [
+      Query.equal("accountId", [accountId]),
+    ]);
+
+    if (bank.total !== 1) return null;
+
+    return parseStringify(bank.documents[0]);
+  } catch (err) {
+    console.log("Error at [GET_BANK_BY_ACCOUNT_ID_ACTION]:", err);
   }
 };
