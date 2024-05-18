@@ -14,6 +14,7 @@ import { Form } from "@/components/ui/form";
 import { signIn, signUp } from "@/lib/actions/user.actions";
 import { authFormSchema } from "@/lib/formValidations";
 import CustomInput from "./CustomInput";
+import PlaidLink from "./PlaidLink";
 
 function AuthForm({ type }: AuthFormProps) {
   const [user, setUser] = useState(null);
@@ -34,10 +35,22 @@ function AuthForm({ type }: AuthFormProps) {
   const onSubmit = async (values: TLoginFormSchema) => {
     try {
       setIsLoading(true);
-      // Sign up with Appwrite
-      // Create plaid link token - for linking bank account
+
+      const userData = {
+        firstName: values.firstName!,
+        lastName: values.lastName!,
+        address1: values.address1!,
+        city: values.city!,
+        state: values.state!,
+        postalCode: values.postalCode!,
+        dateOfBirth: values.dateOfBirth!,
+        ssn: values.ssn!,
+        email: values.email,
+        password: values.password,
+      };
+
       if (type === "sign-up") {
-        const newUser = await signUp(values);
+        const newUser = await signUp(userData);
         setUser(newUser);
       }
 
@@ -72,7 +85,9 @@ function AuthForm({ type }: AuthFormProps) {
       </header>
 
       {user ? (
-        <div className="flex flex-col gap-4">{/* Plaid Link Component */}</div>
+        <div className="flex flex-col gap-4">
+          <PlaidLink user={user} variant="primary" />
+        </div>
       ) : (
         <>
           <Form {...form}>
