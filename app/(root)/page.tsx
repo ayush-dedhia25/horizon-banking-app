@@ -23,7 +23,7 @@ async function RootPage({ searchParams: { id, page } }: SearchParamProps) {
           <HeaderBox
             type="greeting"
             title="Welcome"
-            user={loggedIn?.firstName}
+            user={`${loggedIn?.firstName} ${loggedIn?.lastName}`}
             subtext="Access and manage your account and transactions efficiently."
           />
           <TotalBalanceBox
